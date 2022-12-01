@@ -4,6 +4,6 @@ import os, sys
 # Usage:
 # my_lines = open_file("input.txt")
 def open_file(filename):
-    file_path = os.path.dirname(os.path.realpath(sys.argv[0])) + "\\" + filename
+    file_path = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])),filename)
     file = open(file_path, 'r')
     return file.readlines()
