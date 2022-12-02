@@ -4,16 +4,19 @@ from common import open_file
 
 file_content = open_file("input.txt")
 
-ROCK = 1, 
+ROCK = 1
 PAPER = 2
 SCISSORS = 3
+WIN = "X"
+DRAW = "Y"
+LOSS = "Z"
 
-OUTCOMES = {"X": 0, "Y": 3, "Z": 6}
+OUTCOMES = {WIN: 0, DRAW: 3, LOSS: 6}
 
 STRATEGY_GUIDE = {
-    "A": {"X": SCISSORS, "Y": ROCK, "Z": PAPER},
-    "B": {"X": ROCK, "Y": PAPER, "Z": SCISSORS},
-    "C": {"X": PAPER, "Y": SCISSORS, "Z": ROCK}
+    "A": {WIN: SCISSORS, DRAW: ROCK, LOSS: PAPER},
+    "B": {WIN: ROCK, DRAW: PAPER, LOSS: SCISSORS},
+    "C": {WIN: PAPER, DRAW: SCISSORS, LOSS: ROCK}
 }
 
 score = 0
