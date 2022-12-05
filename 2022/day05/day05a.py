@@ -11,6 +11,10 @@ def how_many_stacks():
             return int(line.strip()[-1]), line_count
         line_count += 1
 
+def determine_the_move(text):
+    numbers = re.findall(r'\d+', text)
+    return int(numbers[0]), int(numbers[1]), int(numbers[2])
+
 stacks, starting_depth = how_many_stacks()
 stack_array = [ [] for i in range(stacks) ]
 
@@ -26,14 +30,8 @@ for line in file_content:
             current_index += 1
     else:
         if line[0:4] == "move":
-            numbers = re.findall(r'\d+', line)
-            number_to_move = int(numbers[0])
-            move_from = int(numbers[1])
-            move_to = int(numbers[2])
+            number_to_move, move_from, move_to = determine_the_move(line)
             for x in range(number_to_move):
                 stack_array[move_to-1].append(stack_array[move_from-1].pop())
 
-topItems = ""
-for i in range(stacks):
-    topItems += stack_array[i][-1]
-print(topItems) # VJSFHWGFT
+print("".join([thisStack[-1] for thisStack in stack_array])) # VJSFHWGFT
