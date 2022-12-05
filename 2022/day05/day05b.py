@@ -4,10 +4,15 @@ from common import open_file
 
 file_content = open_file("input.txt")
 
-# Ugh hardcoded
-stacks = 9
-stack_array = [[],[],[],[],[],[],[],[],[]]
-starting_depth = 8
+def how_many_stacks():
+    line_count = 1
+    for line in file_content:
+        if line[1] == "1":
+            return int(line.strip()[-1]), line_count
+        line_count += 1
+
+stacks, starting_depth = how_many_stacks()
+stack_array = [ [] for i in range(stacks) ]
 
 line_count = 0
 for line in file_content:
@@ -36,9 +41,3 @@ topItems = ""
 for i in range(stacks):
     topItems += stack_array[i][-1]
 print(topItems) # LCTQFBVZV
-
-
-
-
-
-
