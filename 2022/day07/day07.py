@@ -25,6 +25,11 @@ def is_navigate_up(dir):
 def get_file_size(line):
     return int(line.split(" ")[0])
 
+def add_size_to_relevant_directories(dir_tree, cwd, size):
+    for folder in dir_tree:
+        if cwd.startswith(folder):
+            dir_tree[folder] += size
+
 dir_tree = {}
 cwd = ""
 currently_listing_directory = False
@@ -33,10 +38,8 @@ current_directory_size = 0
 for line in file_content:
     if currently_listing_directory:
         if is_command(line):
+            add_size_to_relevant_directories(dir_tree, cwd, current_directory_size)
             currently_listing_directory = False
-            for folder in dir_tree:
-                if cwd.startswith(folder):
-                    dir_tree[folder] += current_directory_size
             current_directory_size = 0
         elif not is_dir_name(line):
             current_directory_size += get_file_size(line)
@@ -49,25 +52,17 @@ for line in file_content:
                 cwd = cwd.split("/")[:-1]
                 cwd = "/".join(cwd) if cwd != "" else "/"
             else:
-                if cwd == "/":
-                    cwd = cwd + dir_to_select
-                else:
-                    cwd = cwd + "/" + dir_to_select
+                cwd += dir_to_select if is_root_dir(cwd) else f"/{dir_to_select}"
             if not cwd in dir_tree:
                 dir_tree[cwd] = 0
         if is_list_dir(line):
             currently_listing_directory = True
     
 # Now we are out of the loop, we need to finalise the final directory
-for folder in dir_tree:
-    if cwd.startswith(folder):
-        dir_tree[folder] += current_directory_size
+add_size_to_relevant_directories(dir_tree, cwd, current_directory_size)
 
 # Calculate sum of all directories of at most 100000
-total = 0
-for folder in dir_tree:
-    if dir_tree[folder] <= 100000:
-        total += dir_tree[folder]
+total = sum([dir_tree[folder] for folder in dir_tree if dir_tree[folder] <= 100000])
 
 print(f"PART ONE: Total of all small directories: {total}") # 1449447
 
