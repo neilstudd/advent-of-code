@@ -26,9 +26,9 @@ def get_file_size(line):
     return int(line.split(" ")[0])
 
 def add_size_to_relevant_directories(dir_tree, cwd, size):
-    for folder in dir_tree:
-        if cwd.startswith(folder):
-            dir_tree[folder] += size
+    for dir in dir_tree:
+        if cwd.startswith(dir):
+            dir_tree[dir] += size
 
 dir_tree = {}
 cwd = ""
@@ -36,33 +36,38 @@ currently_listing_directory = False
 current_directory_size = 0
 
 for line in file_content:
+
+    # Begin by checking if we are currently processing a list of directory files
     if currently_listing_directory:
         if is_command(line):
+            # We've finished listing files, so print the collated filesize to this directory and parents
             add_size_to_relevant_directories(dir_tree, cwd, current_directory_size)
             currently_listing_directory = False
             current_directory_size = 0
         elif not is_dir_name(line):
+            # We are still gathering files, so increment total filesize
             current_directory_size += get_file_size(line)
-    if is_command(line):
-        if is_change_dir(line):
-            dir_to_select = line.strip().split("$ cd ")[1]
-            if is_root_dir(dir_to_select):
-                cwd = "/"
-            elif is_navigate_up(dir_to_select):
-                cwd = cwd.split("/")[:-1]
-                cwd = "/".join(cwd) if cwd != "" else "/"
-            else:
-                cwd += dir_to_select if is_root_dir(cwd) else f"/{dir_to_select}"
-            if not cwd in dir_tree:
-                dir_tree[cwd] = 0
-        if is_list_dir(line):
-            currently_listing_directory = True
+
+    # If we have received terminal input (cd or ls), do something with it
+    if is_change_dir(line):
+        dir_to_select = line.strip().split("$ cd ")[1]
+        if is_root_dir(dir_to_select):
+            cwd = "/"
+        elif is_navigate_up(dir_to_select):
+            cwd = cwd.split("/")[:-1]
+            cwd = "/".join(cwd) if cwd != "" else "/"
+        else:
+            cwd += dir_to_select if is_root_dir(cwd) else f"/{dir_to_select}"
+        # Initialise directory if it's not already in the tree
+        dir_tree[cwd] = 0 if not cwd in dir_tree else dir_tree[cwd]
+    elif is_list_dir(line):
+        currently_listing_directory = True
     
 # Now we are out of the loop, we need to finalise the final directory
 add_size_to_relevant_directories(dir_tree, cwd, current_directory_size)
 
 # Calculate sum of all directories of at most 100000
-total = sum([dir_tree[folder] for folder in dir_tree if dir_tree[folder] <= 100000])
+total = sum([dir_tree[dir] for dir in dir_tree if dir_tree[dir] <= 100000])
 
 print(f"PART ONE: Total of all small directories: {total}") # 1449447
 
