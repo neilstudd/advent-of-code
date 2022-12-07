@@ -30,10 +30,6 @@ cwd = ""
 currently_listing_directory = False
 current_directory_size = 0
 
-# Data should be in the form of:
-# { "/": { "folder_size"}}
-
-# First sweep to build directory structure
 for line in file_content:
     if currently_listing_directory:
         if is_command(line):
@@ -44,7 +40,6 @@ for line in file_content:
             current_directory_size = 0
         elif not is_dir_name(line):
             current_directory_size += get_file_size(line)
-
     if is_command(line):
         if is_change_dir(line):
             dir_to_select = line.strip().split("$ cd ")[1]
