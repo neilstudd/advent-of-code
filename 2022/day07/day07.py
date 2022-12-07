@@ -4,26 +4,13 @@ from common import open_file
 
 file_content = open_file("input.txt")
 
-def is_command(line):
-    return line.startswith("$")
-
-def is_change_dir(line):
-    return line.startswith("$ cd ")
-
-def is_list_dir(line):
-    return line.startswith("$ ls")
-
-def is_dir_name(line):
-    return line.startswith("dir ")
-
-def is_root_dir(dir):
-    return dir == "/"
-
-def is_navigate_up(dir):
-    return dir == ".."
-
-def get_file_size(line):
-    return int(line.split(" ")[0])
+is_command = lambda line: (line.startswith("$"))
+is_change_dir = lambda line: (line.startswith("$ cd "))
+is_list_dir = lambda line: (line.startswith("$ ls"))
+is_dir_name = lambda line: (line.startswith("dir "))
+is_root_dir = lambda dir: (dir == "/")
+is_navigate_up = lambda dir: (dir == "..")
+get_file_size = lambda line: (int(line.split(" ")[0]))
 
 def add_size_to_relevant_directories(dir_tree, cwd, size):
     for dir in dir_tree:
@@ -36,7 +23,6 @@ currently_listing_directory = False
 current_directory_size = 0
 
 for line in file_content:
-
     # Begin by checking if we are currently processing a list of directory files
     if currently_listing_directory:
         if is_command(line):
@@ -47,7 +33,6 @@ for line in file_content:
         elif not is_dir_name(line):
             # We are still gathering files, so increment total filesize
             current_directory_size += get_file_size(line)
-
     # If we have received terminal input (cd or ls), do something with it
     if is_change_dir(line):
         dir_to_select = line.strip().split("$ cd ")[1]
@@ -68,7 +53,6 @@ add_size_to_relevant_directories(dir_tree, cwd, current_directory_size)
 
 # Calculate sum of all directories of at most 100000
 total = sum([dir_tree[dir] for dir in dir_tree if dir_tree[dir] <= 100000])
-
 print(f"PART ONE: Total of all small directories: {total}") # 1449447
 
 ## PART TWO
@@ -76,7 +60,6 @@ TOTAL_DISK_SPACE = 70000000
 REQUIRED_DISK_SPACE = 30000000
 AVAILABLE_DISK_SPACE = TOTAL_DISK_SPACE - dir_tree["/"]
 SPACE_TO_CREATE = REQUIRED_DISK_SPACE - AVAILABLE_DISK_SPACE
-
 sorted_directories = sorted(dir_tree.items(), key=lambda x: x[1])
 for dir in sorted_directories:
     if dir[1] >= SPACE_TO_CREATE:
