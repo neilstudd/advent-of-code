@@ -47,7 +47,7 @@ for line in file_content:
                 cwd = "/"
             elif is_navigate_up(dir_to_select):
                 cwd = cwd.split("/")[:-1]
-                cwd = "/".join(cwd)
+                cwd = "/".join(cwd) if cwd != "" else "/"
             else:
                 if cwd == "/":
                     cwd = cwd + dir_to_select
@@ -72,7 +72,6 @@ for folder in dir_tree:
 print(f"PART ONE: Total of all small directories: {total}") # 1449447
 
 ## PART TWO
-
 TOTAL_DISK_SPACE = 70000000
 REQUIRED_DISK_SPACE = 30000000
 AVAILABLE_DISK_SPACE = TOTAL_DISK_SPACE - dir_tree["/"]
@@ -80,8 +79,6 @@ SPACE_TO_CREATE = REQUIRED_DISK_SPACE - AVAILABLE_DISK_SPACE
 
 sorted_directories = sorted(dir_tree.items(), key=lambda x: x[1])
 for dir in sorted_directories:
-    # hack for weird bonus directory
-    if dir[0] != "":
-        if dir[1] >= SPACE_TO_CREATE:
-            print(f"PART TWO: Delete {dir[0]} with size {dir[1]}")
-            break
+    if dir[1] >= SPACE_TO_CREATE:
+        print(f"PART TWO: Delete {dir[0]} with size {dir[1]}") # 8679207
+        break
