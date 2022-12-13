@@ -62,7 +62,7 @@ for y, line in enumerate(terrain):
         determine_valid_moves(x, y, char["char"])
 
 # PART 1: Find shortest route from start to end
-# HINT_RECEIVED: Kudos to Paul Martin for introducing me to Dijksta's algorithm - 
+# HINT_RECEIVED: Kudos to Paul Martin for introducing me to Dijkstra's algorithm - 
 # after learning about this, it was just a question of building all the components
 # necessary to construct the route-finder.
 print(f"Part 1: {determine_shortest_route(start_point, end_point)} steps") # 408
