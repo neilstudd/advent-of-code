@@ -10,4 +10,4 @@ Started in 2022, but I'll backfill previous years when I need a festive boost.
 
 | Year | Language | Days Attempted | Stars | Notes |
 | ---- | -------- | -------------- | ----- | ----- |
-| 2022 | Python   | 15             | 29    | TODO: Day 15 Pt2     |
+| 2022 | Python   | 1-15, 18       | 30    |      |
