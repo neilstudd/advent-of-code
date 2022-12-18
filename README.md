@@ -8,6 +8,6 @@ For the curious, rather than those who want to learn good coding practices... (A
 
 Started in 2022, but I'll backfill previous years when I need a festive boost.
 
-| Year | Language | Days Attempted | Stars | Notes |
-| ---- | -------- | -------------- | ----- | ----- |
-| 2022 | Python   | 1-15, 18       | 30    |      |
+| Year | Day Scores  | Stars |
+| ---- | -------------- | ----- |
+| 2022 |  🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬛⬜⬜⬛⬜⬜⬜⬜⬜⬜⬜       | 30    |
