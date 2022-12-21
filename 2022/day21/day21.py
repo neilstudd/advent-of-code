@@ -20,6 +20,16 @@ def change_my_shout(new_number):
             monkey["number"] = new_number
             break
 
+def binary_chop(low, high):
+    mid = (low + high) // 2
+    my_monkey["number"] = mid
+    first_number = shout(root_monkey["a"])
+    second_number = shout(root_monkey["b"])
+    diff = first_number - second_number
+    if diff < 0: return binary_chop(low, mid - 1)
+    elif diff > 0: return binary_chop(mid + 1, high)
+    else: return mid
+
 monkeys = []
 
 for line in open_file("input.txt"):
@@ -32,19 +42,10 @@ for line in open_file("input.txt"):
         a, operation, b = monkey_data.split(" ")
         monkeys.append({"name": monkey_name, "a": a, "operator": ops[operation], "b": b})
 
-print(f"Part 1: Root shouts {shout('root')}.") # 56490240862410
+print(f"Part 1: Root shouts {shout('root')}") # 56490240862410
 
-# Part 2: In a rush today, and this is hella slow (shouting about 100 numbers per minute)
-# So I did a bit of binary chopping, modifying my_number one digit at a time until I got in the ballpark
-my_number = 3403989691740
-first_number = -1
+# Hone in on the correct answer with a binary chop
 my_monkey = find_monkey("humn")
 root_monkey = find_monkey("root")
-second_number = shout(root_monkey["b"]) # This doesn't change in my data; it might be an incorrect assumption with other data
-while first_number != second_number:
-    my_number += 1
-    my_monkey["number"] = my_number
-    first_number = shout(root_monkey["a"])
-    if my_number % 10 == 0: print(f"...When I shout {my_number}, left={first_number}, right={second_number}. diff {first_number - second_number}.")
-print(f"Part 2: When I shout {my_number}, left monkey shouts {first_number}, right monkey shouts {second_number}")
-# When I shout 3403989691757, left monkey shouts 17522552903925, right monkey shouts 17522552903925
+print(f"Part 2: Human should shout {binary_chop(1, 40000000000000)}")
+# When I shout 3403989691757 (submitted answer) OR 3403989691758, both monkeys shout 17522552903925.
