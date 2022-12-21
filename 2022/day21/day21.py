@@ -2,7 +2,7 @@ import sys, os, operator, time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 from common import open_file
 
-ops = { "+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.floordiv }
+ops = { "+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv }
 
 def shout(monkey_name):
     for monkey in monkeys:
@@ -42,10 +42,10 @@ for line in open_file("input.txt"):
         a, operation, b = monkey_data.split(" ")
         monkeys.append({"name": monkey_name, "a": a, "operator": ops[operation], "b": b})
 
-print(f"Part 1: Root shouts {shout('root')}") # 56490240862410
+print(f"Part 1: Root shouts {int(shout('root'))}") # 56490240862410
 
 # Hone in on the correct answer with a binary chop
 my_monkey = find_monkey("humn")
 root_monkey = find_monkey("root")
 print(f"Part 2: Human should shout {binary_chop(1, 40000000000000)}")
-# When I shout 3403989691757 (submitted answer) OR 3403989691758, both monkeys shout 17522552903925.
+# When I shout 3403989691757, both monkeys shout 17522552903925.
