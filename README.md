@@ -8,4 +8,4 @@ For the curious, rather than those who want to learn good coding practices... (A
 
 Started in 2022, but I'll backfill previous years when I need a festive boost.
 
-**2022:**  🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬛⬜⬜⬛⬜⬛⬜⬜⬜⬜⬜ _(31)_
+**2022:**  🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬛⬜⬜⬛⬜⬛🟨⬜⬜⬜⬜ _(33)_
