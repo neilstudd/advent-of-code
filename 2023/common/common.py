@@ -12,13 +12,11 @@ def open_file(filename):
     file = open(file_path, 'r')
     return file.readlines()
 
-# Prints the answer, and (if there's test output / expected value) verifies the answer.
+# Prints the answer, and (if there's an expected value to check) verifies the answer.
 def print_and_verify_answer(mode, part, answer, expected):
     print("\nPart " + part + " " + mode + " answer: " + str(answer))
-
-    # if mode contains "test", verify the answer
-    if "test" in mode:
+    if expected != None:
         if answer != expected:
-            print("❌ Test FAILED, expected", expected, "got", answer)
+            print("❌ FAILED! Expected", expected, "got", answer)
         else:
-            print("✅ Output matches expected value ")
+            print("✅ Output matches expected value")
