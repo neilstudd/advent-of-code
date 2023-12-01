@@ -15,7 +15,9 @@ def open_file(filename):
 # Prints the answer, and (if there's test output / expected value) verifies the answer.
 def print_and_verify_answer(mode, part, answer, expected):
     print("\nPart " + part + " " + mode + " answer: " + str(answer))
-    if mode == "test":
+
+    # if mode contains "test", verify the answer
+    if "test" in mode:
         if answer != expected:
             print("❌ Test FAILED, expected", expected, "got", answer)
         else:
