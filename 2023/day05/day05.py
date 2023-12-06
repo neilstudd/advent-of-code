@@ -79,5 +79,5 @@ def generate_seeds(input_str): # ChatGPT assist
 run_part_one("test", 35)
 run_part_one("prod", 265018614)
 run_part_two("test", 46)
-run_part_two("prod")
+run_part_two("prod", 63179500) # This will take about 4.5 hours to run, so... don't.
 # Now run it and watch the magic happen 🪄
