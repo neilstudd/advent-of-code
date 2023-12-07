@@ -10,46 +10,27 @@ RANK_FULL_HOUSE = 4
 RANK_FOUR_OF_A_KIND = 5
 RANK_FIVE_OF_A_KIND = 6
 
-def run_part_one(mode, expected = None):
-    data_file = open_file( mode + ".txt")
-    hand_data = []
-
-    CARD_TO_ALPHA = {
+PART1_CARDS = {
             '2': 'a', '3': 'b', '4': 'c', '5': 'd', '6': 'e',
             '7': 'f', '8': 'g', '9': 'h', 'T': 'i', 'J': 'j',
             'Q': 'k', 'K': 'l', 'A': 'm'
         }
 
-    for line in data_file:
-        this_hand = line.strip().split(" ")[0]
-        converted_hand = ''.join(CARD_TO_ALPHA.get(card, card) for card in this_hand)
-        bid = int(line.strip().split(" ")[1])
-        hand_data.append({"hand": this_hand, "converted_hand": converted_hand, "strength": calculate_hand_strength(this_hand), "bid": bid})
-
-    hand_data.sort(key=lambda x: (x["strength"], x["converted_hand"]), reverse=False)
-    hand_rank = rank_hands(hand_data)
-    print_and_verify_answer(mode, "one", hand_rank, expected)
-
-def run_part_two(mode, expected = None):
-
-    data_file = open_file( mode + ".txt")
-    hand_data = []
-
-    CARD_TO_ALPHA = {
+PART2_CARDS = {
         'J': 'a', '2': 'b', '3': 'c', '4': 'd', '5': 'e',
         '6': 'f', '7': 'g', '8': 'h', '9': 'i', 'T': 'j',
         'Q': 'k', 'K': 'l', 'A': 'm'
     }
 
-    for line in data_file:
-        this_hand = line.strip().split(" ")[0]
-        converted_hand = ''.join(CARD_TO_ALPHA.get(card, card) for card in this_hand)
-        bid = int(line.strip().split(" ")[1])
-        hand_data.append({"hand": this_hand, "converted_hand": converted_hand, "strength": calculate_hand_strength_pt2(this_hand), "bid": bid})
+def run_part_one(mode, expected = None):
+    data_file = open_file( mode + ".txt")
+    hand_data = construct_hands(data_file, PART1_CARDS)
+    print_and_verify_answer(mode, "one", hand_data, expected)
 
-    hand_data.sort(key=lambda x: (x["strength"], x["converted_hand"]), reverse=False)
-    hand_rank = rank_hands(hand_data)
-    print_and_verify_answer(mode, "two", hand_rank, expected)
+def run_part_two(mode, expected = None):
+    data_file = open_file( mode + ".txt")
+    hand_data = construct_hands(data_file, PART2_CARDS)
+    print_and_verify_answer(mode, "two", hand_data, expected)
 
 def calculate_hand_strength_pt2(hand):
     count_of_most_common_card = collections.Counter(hand).most_common(1)[0][1]
@@ -88,7 +69,19 @@ def calculate_hand_strength(hand):
         return RANK_ONE_PAIR
     else:
         return RANK_HIGH_CARD
-    
+
+def construct_hands(data_file, cards):
+    hand_data = []
+    for line in data_file:
+        this_hand = line.strip().split(" ")[0]
+        converted_hand = ''.join(cards.get(card, card) for card in this_hand)
+        bid = int(line.strip().split(" ")[1])
+        strength = calculate_hand_strength(this_hand) if cards == PART1_CARDS else calculate_hand_strength_pt2(this_hand)
+        hand_data.append({"hand": this_hand, "converted_hand": converted_hand, "strength": strength, "bid": bid})
+    hand_data.sort(key=lambda x: (x["strength"], x["converted_hand"]), reverse=False)
+    hand_rank = rank_hands(hand_data)
+    return hand_rank
+
 def rank_hands(hand_data):
     rank_total = 0
     current_rank = 1
