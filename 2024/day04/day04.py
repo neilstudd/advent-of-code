@@ -11,6 +11,12 @@ def is_start_of_word(char):
 def is_start_of_x(char):
     return char == "M" or char == "S"
 
+def is_mas(cells):
+    return "".join(cells) == "MAS"
+
+def enough_cells_to_check(grid, row_index, column_index):
+    return True if row_index + 2 < len(grid) and column_index + 2 < len(grid[row_index]) else False
+
 def chunk_contains_mas(word_search, row_index, col_index):
     chunk = extract_chunk(word_search, row_index, col_index)
     chunk[0][1], chunk[1][0], chunk[1][2], chunk[2][1] = ".", ".", ".", "."
@@ -34,7 +40,6 @@ def is_word_in_direction(grid, row_index, column_index, direction):
         "west": (0, -1),
         "north_west": (-1, -1)
     }
-
     row_delta, col_delta = directions[direction]
     cells = []
     for i in range(1, 4):
@@ -44,12 +49,6 @@ def is_word_in_direction(grid, row_index, column_index, direction):
             return False
         cells.append(grid[new_row][new_col])
     return is_mas(cells)
-
-def is_mas(cells):
-    return "".join(cells) == "MAS"
-
-def section_in_range(grid, row_index, column_index):
-    return True if row_index + 2 < len(grid) and column_index + 2 < len(grid[row_index]) else False
 
 def extract_chunk(grid, row_index, column_index):
     if row_index + 2 < len(grid) and column_index + 2 < len(grid[row_index]):
@@ -78,8 +77,7 @@ def run_part_two(mode, expected = None):
     for row_index, row in enumerate(word_search):
         for col_index, col in enumerate(row):
             if is_start_of_x(col):
-                enough_cells_to_check = section_in_range(word_search, row_index, col_index)
-                x_found += 1 if enough_cells_to_check and chunk_contains_mas(word_search, row_index, col_index) else 0
+                x_found += 1 if enough_cells_to_check(word_search, row_index, col_index) and chunk_contains_mas(word_search, row_index, col_index) else 0
     print_and_verify_answer(mode, "two", x_found, expected)
 
 # ADD EXPECTED OUTPUTS TO TESTS HERE 👇
