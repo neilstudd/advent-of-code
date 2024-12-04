@@ -3,13 +3,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 from common import open_file, print_and_verify_answer
 
 def construct_grid_from_file(file):
-    grid = []
-    for line in file:
-        this_line = []
-        for char in line.strip():
-            this_line.append(char)
-        grid.append(this_line)
-    return grid
+    return [list(line.strip()) for line in file]
 
 def is_start_of_word(char):
     return char == "X"
@@ -17,56 +11,44 @@ def is_start_of_word(char):
 def is_start_of_x(char):
     return char == "M" or char == "S"
 
-def is_valid_mas(chunk):
-    chunk[0][1] = "."
-    chunk[1][0] = "."
-    chunk[1][2] = "."
-    chunk[2][1] = "."
+def chunk_contains_mas(word_search, row_index, col_index):
+    chunk = extract_chunk(word_search, row_index, col_index)
+    chunk[0][1], chunk[1][0], chunk[1][2], chunk[2][1] = ".", ".", ".", "."
     return chunk == [["M", ".", "S"], [".", "A", "."], ["M", ".", "S"]] or chunk == [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]] or chunk == [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]] or chunk == [["M", ".", "M"], [".", "A", "."], ["S", ".", "S"]] or chunk == [["S", ".", "S"], [".", "A", "."], ["M", ".", "M"]] 
 
-def is_word_to_north(grid, row_index, column_index):
-    if row_index - 3 >= 0:
-        return grid[row_index - 1][column_index] == "M" and grid[row_index - 2][column_index] == "A" and grid[row_index - 3][column_index] == "S"
-    return False
+def is_word_in_direction(grid, row_index, column_index, direction):
+    directions = {
+        "north": (-1, 0),
+        "north_east": (-1, 1),
+        "east": (0, 1),
+        "south_east": (1, 1),
+        "south": (1, 0),
+        "south_west": (1, -1),
+        "west": (0, -1),
+        "north_west": (-1, -1)
+    }
 
-def is_word_to_north_east(grid, row_index, column_index):
-    if row_index - 3 >= 0 and column_index + 3 < len(grid[row_index]):
-        return grid[row_index - 1][column_index + 1] == "M" and grid[row_index - 2][column_index + 2] == "A" and grid[row_index - 3][column_index + 3] == "S"
-    return False
+    row_delta, col_delta = directions[direction]
+    cells = []
+    for i in range(1, 4):
+        new_row = row_index + i * row_delta
+        new_col = column_index + i * col_delta
+        if not (0 <= new_row < len(grid) and 0 <= new_col < len(grid[0])):
+            return False
+        cells.append(grid[new_row][new_col])
+    return is_mas(cells)
 
-def is_word_to_east(grid, row_index, column_index):
-    if column_index + 3 < len(grid[row_index]):
-        return grid[row_index][column_index + 1] == "M" and grid[row_index][column_index + 2] == "A" and grid[row_index][column_index + 3] == "S"
-    return False
+def is_mas(cells):
+    return "".join(cells) == "MAS"
 
-def is_word_to_south_east(grid, row_index, column_index):
-    if row_index + 3 < len(grid) and column_index + 3 < len(grid[row_index]):
-        return grid[row_index + 1][column_index + 1] == "M" and grid[row_index + 2][column_index + 2] == "A" and grid[row_index + 3][column_index + 3] == "S"
-    return False
+def section_in_range(grid, row_index, column_index):
+    return True if row_index + 2 < len(grid) and column_index + 2 < len(grid[row_index]) else False
 
-def is_word_to_south(grid, row_index, column_index):
-    if row_index + 3 < len(grid):
-        return grid[row_index + 1][column_index] == "M" and grid[row_index + 2][column_index] == "A" and grid[row_index + 3][column_index] == "S"
-    return False
-
-def is_word_to_south_west(grid, row_index, column_index):
-    if row_index + 3 < len(grid) and column_index - 3 >= 0:
-        return grid[row_index + 1][column_index - 1] == "M" and grid[row_index + 2][column_index - 2] == "A" and grid[row_index + 3][column_index - 3] == "S"
-    return False
-
-def is_word_to_west(grid, row_index, column_index):
-    if column_index - 3 >= 0:
-        return grid[row_index][column_index - 1] == "M" and grid[row_index][column_index - 2] == "A" and grid[row_index][column_index - 3] == "S"
-    return False
-
-def is_word_to_north_west(grid, row_index, column_index):
-    if row_index - 3 >= 0 and column_index - 3 >= 0:
-        return grid[row_index - 1][column_index - 1] == "M" and grid[row_index - 2][column_index - 2] == "A" and grid[row_index - 3][column_index - 3] == "S"
-    return False
-
-def extract_potential_x(grid, row_index, column_index):
+def extract_chunk(grid, row_index, column_index):
     if row_index + 2 < len(grid) and column_index + 2 < len(grid[row_index]):
-        return [grid[row_index][column_index:column_index+3], grid[row_index + 1][column_index:column_index+3], grid[row_index + 2][column_index:column_index+3]]
+        return [grid[row_index][column_index:column_index+3], 
+            grid[row_index + 1][column_index:column_index+3], 
+            grid[row_index + 2][column_index:column_index+3]]
     return False
 
 def run_part_one(mode, expected = None):
@@ -76,38 +58,21 @@ def run_part_one(mode, expected = None):
     for row_index, row in enumerate(word_search):
         for col_index, col in enumerate(row):
             if is_start_of_word(col):
-                if is_word_to_east(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_north(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_south(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_west(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_north_east(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_south_east(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_south_west(word_search, row_index, col_index):
-                    words_found += 1
-                if is_word_to_north_west(word_search, row_index, col_index):
-                    words_found += 1
-
+                directions = ["east", "north", "south", "west", "north_east", "south_east", "south_west", "north_west"]
+                for direction in directions:
+                    if is_word_in_direction(word_search, row_index, col_index, direction):
+                        words_found += 1
     print_and_verify_answer(mode, "one", words_found, expected)
 
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
     word_search = construct_grid_from_file(data_file)
     x_found = 0
-
     for row_index, row in enumerate(word_search):
         for col_index, col in enumerate(row):
             if is_start_of_x(col):
-                this_mas = extract_potential_x(word_search, row_index, col_index)
-                if this_mas:
-                    if is_valid_mas(this_mas):
-                        x_found += 1
-
+                enough_cells_to_check = section_in_range(word_search, row_index, col_index)
+                x_found += 1 if enough_cells_to_check and chunk_contains_mas(word_search, row_index, col_index) else 0
     print_and_verify_answer(mode, "two", x_found, expected)
 
 # ADD EXPECTED OUTPUTS TO TESTS HERE 👇
