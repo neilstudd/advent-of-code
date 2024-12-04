@@ -14,7 +14,14 @@ def is_start_of_x(char):
 def chunk_contains_mas(word_search, row_index, col_index):
     chunk = extract_chunk(word_search, row_index, col_index)
     chunk[0][1], chunk[1][0], chunk[1][2], chunk[2][1] = ".", ".", ".", "."
-    return chunk == [["M", ".", "S"], [".", "A", "."], ["M", ".", "S"]] or chunk == [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]] or chunk == [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]] or chunk == [["M", ".", "M"], [".", "A", "."], ["S", ".", "S"]] or chunk == [["S", ".", "S"], [".", "A", "."], ["M", ".", "M"]] 
+    valid_chunks = [
+        [["M", ".", "S"], [".", "A", "."], ["M", ".", "S"]],
+        [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]],
+        [["S", ".", "M"], [".", "A", "."], ["S", ".", "M"]],
+        [["M", ".", "M"], [".", "A", "."], ["S", ".", "S"]],
+        [["S", ".", "S"], [".", "A", "."], ["M", ".", "M"]]
+    ]
+    return chunk in valid_chunks
 
 def is_word_in_direction(grid, row_index, column_index, direction):
     directions = {
