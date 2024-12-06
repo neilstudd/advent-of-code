@@ -91,14 +91,25 @@ def run_part_one(mode, expected = None):
                 squares_visited[guard_position_x][guard_position_y+1] = 'X'
 
     total_squares = sum([row.count('X') for row in squares_visited])
+
+    # Print to file
+    with open(mode + "_squares_visited.txt", "w") as f:
+            for row in squares_visited:
+                f.write("".join(row) + "\n")
+
     print_and_verify_answer(mode, "one", total_squares, expected)
 
 def run_part_two(mode, expected = None):
 
     data_file = open_file( mode + ".txt")
 
-    # -------------------------------
-    # Part Two code goes here
+    # This one has beaten me today!
+    # Challenges:
+    # - Brute force is out of the equation (it takes 25secs to follow the walk for any given cell)
+    # - Potential to limit number of cells to check by using prod_squares_visited.txt (we don't need to put obstacles on
+    #     any cells which aren't in the walk, because it would have no effect) but this still leaves 4000 cells to check
+    #
+    # I'm missing something here, and given it's only day 6, it must be something obvious...
 
     answer = None # <-- Change this to answer
     # -------------------------------
