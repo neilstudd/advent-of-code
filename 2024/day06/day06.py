@@ -2,29 +2,12 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 from common import open_file, print_and_verify_answer
 
-def get_guard_direction(map):
-    for x in range(len(map)):
-        for y in range(len(map[x])):
-            if map[x][y] == "^":
-                return "up"
-            if map[x][y] == "v":
-                return "down"
-            if map[x][y] == "<":
-                return "left"
-            if map[x][y] == ">":
-                return "right"
+def initialise_map(data_file):
+    return [list(line.strip()) for line in data_file]
 
-def get_guard_position(map):
-    for y in range(len(map)):
-        for x in range(len(map[y])):
-            if map[x][y] == "^":
-                return (x, y)
-            if map[x][y] == "v":
-                return (x, y)
-            if map[x][y] == "<":
-                return (x, y)
-            if map[x][y] == ">":
-                return (x, y)
+def get_guard_direction(map, x, y):
+    directions = {"^": "up", "v": "down", "<": "left", ">": "right"}
+    return directions.get(map[x][y])
 
 def get_next_character(map, x, y, direction):
     if direction == "up":
@@ -36,88 +19,76 @@ def get_next_character(map, x, y, direction):
     if direction == "right":
         return map[x][y+1]
 
-def at_exit(map):
-    return get_guard_direction(map) == "up" and get_guard_position(map)[0] == 0 or \
-              get_guard_direction(map) == "down" and get_guard_position(map)[0] == len(map) - 1 or \
-                get_guard_direction(map) == "left" and get_guard_position(map)[1] == 0 or \
-                    get_guard_direction(map) == "right" and get_guard_position(map)[1] == len(map[0]) - 1
+def at_exit(map, x, y, direction):
+    return (direction == "up" and x == 0) or \
+           (direction == "down" and x == len(map) - 1) or \
+           (direction == "left" and y == 0) or \
+           (direction == "right" and y == len(map[0]) - 1)
 
-def run_part_one(mode, expected = None):
-    data_file = open_file( mode + ".txt")
-    map = []
-    for line in data_file:
-        this_row = []
-        for c in line.strip():
-            this_row.append(c)
-        map.append(this_row)
+def do_the_walk(map):
+    squares_visited = [['.' for _ in range(len(map[0]))] for _ in range(len(map))]
+    been_here_before = set() # Build this as we need it (most of it won't be needed 💡)
 
-    squares_visited = []
-    for x in range(len(map)):
-        this_row = []
-        for y in range(len(map[x])):
-            this_row.append('.')
-        squares_visited.append(this_row)
+    guard_position_x, guard_position_y = None, None
+    for y in range(len(map)):
+        for x in range(len(map[y])):
+            if map[x][y] in "^v<>":
+                guard_position_x, guard_position_y = x, y
+                break
+        if guard_position_x is not None:
+            break
 
-    while not at_exit(map):
-        current_direction = get_guard_direction(map)
-        guard_position_x, guard_position_y = get_guard_position(map)
+    while guard_position_x is not None:
+        current_direction = get_guard_direction(map, guard_position_x, guard_position_y)
+        squares_visited[guard_position_x][guard_position_y] = 'X'  # Mark initial position as visited
+        if at_exit(map, guard_position_x, guard_position_y, current_direction):
+            break
+
+        if (guard_position_x, guard_position_y, current_direction) in been_here_before:
+            return -1
+
         squares_visited[guard_position_x][guard_position_y] = 'X'
         next_character = get_next_character(map, guard_position_x, guard_position_y, current_direction)
 
         # Change current guard position back to dot
         map[guard_position_x][guard_position_y] = "."
+        been_here_before.add((guard_position_x, guard_position_y, current_direction))
 
         if next_character == "#": # Turn to the right
-            if current_direction == "up":
-                map[guard_position_x][guard_position_y] = ">"
-            elif current_direction == "down":
-                map[guard_position_x][guard_position_y] = "<"
-            elif current_direction == "left":
-                map[guard_position_x][guard_position_y] = "^"
-            elif current_direction == "right":
-                map[guard_position_x][guard_position_y] = "v"
+            turn_right = {"up": "right", "right": "down", "down": "left", "left": "up"}
+            new_direction = turn_right[current_direction]
+            map[guard_position_x][guard_position_y] = {"up": "^", "down": "v", "left": "<", "right": ">"}[new_direction]
         elif next_character == ".": # Move into that cell
-            if current_direction == "up":
-                map[guard_position_x-1][guard_position_y] = "^"
-                squares_visited[guard_position_x-1][guard_position_y] = 'X'
-            elif current_direction == "down":
-                map[guard_position_x+1][guard_position_y] = "v"
-                squares_visited[guard_position_x+1][guard_position_y] = 'X'
-            elif current_direction == "left":
-                map[guard_position_x][guard_position_y-1] = "<"
-                squares_visited[guard_position_x][guard_position_y-1] = 'X'
-            elif current_direction == "right":
-                map[guard_position_x][guard_position_y+1] = ">"
-                squares_visited[guard_position_x][guard_position_y+1] = 'X'
+            move_delta = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (0, 1)}
+            delta_x, delta_y = move_delta[current_direction]
+            guard_position_x += delta_x
+            guard_position_y += delta_y
+            map[guard_position_x][guard_position_y] = {"up": "^", "down": "v", "left": "<", "right": ">"}[current_direction]
 
-    total_squares = sum([row.count('X') for row in squares_visited])
+    return sum(row.count('X') for row in squares_visited)
 
-    # Print to file
-    with open(mode + "_squares_visited.txt", "w") as f:
-            for row in squares_visited:
-                f.write("".join(row) + "\n")
-
+def run_part_one(mode, expected = None):
+    data_file = open_file(mode + ".txt")
+    map = initialise_map(data_file)
+    total_squares = do_the_walk(map)
     print_and_verify_answer(mode, "one", total_squares, expected)
 
 def run_part_two(mode, expected = None):
-
-    data_file = open_file( mode + ".txt")
-
-    # This one has beaten me today!
-    # Challenges:
-    # - Brute force is out of the equation (it takes 25secs to follow the walk for any given cell)
-    # - Potential to limit number of cells to check by using prod_squares_visited.txt (we don't need to put obstacles on
-    #     any cells which aren't in the walk, because it would have no effect) but this still leaves 4000 cells to check
-    #
-    # I'm missing something here, and given it's only day 6, it must be something obvious...
-
-    answer = None # <-- Change this to answer
-    # -------------------------------
-    print_and_verify_answer(mode, "two", answer, expected)
+    data_file = open_file(mode + ".txt")
+    temp_map = initialise_map(data_file)
+    looping_obstructions = 0
+    for row_index, row in enumerate(temp_map):
+        for cell_index, cell in enumerate(row):
+            map = initialise_map(data_file)
+            map[row_index][cell_index] = "#"
+            number_of_steps = do_the_walk(map)
+            if number_of_steps == -1: # We successfully forced a loop
+                looping_obstructions += 1           
+    print_and_verify_answer(mode, "two", looping_obstructions, expected)
 
 # ADD EXPECTED OUTPUTS TO TESTS HERE 👇
 run_part_one("test", 41)
 run_part_one("prod", 4982)
-run_part_two("test", 0)
-run_part_two("prod")
+run_part_two("test", 6)
+run_part_two("prod", 1663)
 # Now run it and watch the magic happen 🪄
