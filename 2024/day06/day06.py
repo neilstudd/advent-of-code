@@ -1,9 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
-from common import open_file, print_and_verify_answer
-
-def initialise_map(data_file):
-    return [list(line.strip()) for line in data_file]
+from common import open_file, print_and_verify_answer, initialise_grid
 
 def get_guard_direction(map, x, y):
     directions = {"^": "up", "v": "down", "<": "left", ">": "right"}
@@ -69,17 +66,17 @@ def do_the_walk(map):
 
 def run_part_one(mode, expected = None):
     data_file = open_file(mode + ".txt")
-    map = initialise_map(data_file)
+    map = initialise_grid(data_file)
     total_squares = do_the_walk(map)
     print_and_verify_answer(mode, "one", total_squares, expected)
 
 def run_part_two(mode, expected = None):
     data_file = open_file(mode + ".txt")
-    temp_map = initialise_map(data_file)
+    temp_map = initialise_grid(data_file)
     looping_obstructions = 0
     for row_index, row in enumerate(temp_map):
         for cell_index, cell in enumerate(row):
-            map = initialise_map(data_file)
+            map = initialise_grid(data_file)
             map[row_index][cell_index] = "#"
             number_of_steps = do_the_walk(map)
             if number_of_steps == -1: # We successfully forced a loop

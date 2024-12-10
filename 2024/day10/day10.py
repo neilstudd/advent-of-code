@@ -1,9 +1,6 @@
-import sys, os
+import sys, os, common
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
-from common import open_file, print_and_verify_answer
-
-def initialise_map(data_file):
-    return [list(line.strip()) for line in data_file]
+from common import open_file, print_and_verify_answer, initialise_grid
 
 def find_trailheads(map):
     return [(x, y) for y in range(len(map)) for x in range(len(map[y])) if map[x][y] == "0"]
@@ -55,7 +52,7 @@ def part2_count_unique_routes(grid, trailhead):
 
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    map = initialise_map(data_file)
+    map = initialise_grid(data_file)
     trailheads = find_trailheads(map)
     total_score = 0
     for trailhead in trailheads:
@@ -64,7 +61,7 @@ def run_part_one(mode, expected = None):
 
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    map = initialise_map(data_file)
+    map = initialise_grid(data_file)
     unique_routes = 0
     trailheads = find_trailheads(map)
     for trailhead in trailheads:

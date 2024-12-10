@@ -12,6 +12,13 @@ def open_file(filename):
     file = open(file_path, 'r')
     return file.readlines()
 
+# Take multiple lines (e.g. from input file), and split into grid,
+# assuming each line is a row, and each character is a cell.
+# Usage:
+# my_grid = initialise_grid(my_lines)
+def initialise_grid(lines):
+    return [list(line.strip()) for line in lines]
+
 # Prints the answer, and (if there's an expected value to check) verifies the answer.
 def print_and_verify_answer(mode, part, answer, expected):
     print("\nPart " + part + " " + mode + " answer: " + str(answer))

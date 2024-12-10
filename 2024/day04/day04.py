@@ -1,9 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
-from common import open_file, print_and_verify_answer
-
-def construct_grid_from_file(file):
-    return [list(line.strip()) for line in file]
+from common import open_file, print_and_verify_answer, initialise_grid
 
 def is_start_of_word(char):
     return char == "X"
@@ -58,7 +55,7 @@ def extract_chunk(grid, row_index, column_index):
 
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    word_search = construct_grid_from_file(data_file)
+    word_search = initialise_grid(data_file)
     words_found = 0
     for row_index, row in enumerate(word_search):
         for col_index, col in enumerate(row):
@@ -71,7 +68,7 @@ def run_part_one(mode, expected = None):
 
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    word_search = construct_grid_from_file(data_file)
+    word_search = initialise_grid(data_file)
     x_found = 0
     for row_index, row in enumerate(word_search):
         for col_index, col in enumerate(row):

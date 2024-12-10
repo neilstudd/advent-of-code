@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
-from common import open_file, print_and_verify_answer
+from common import open_file, print_and_verify_answer, initialise_grid
 
 def get_all_coords_with_this_character(grid, reference_char):
     return [(line_index, char_index) for line_index, line in enumerate(grid) for char_index, char in enumerate(line) if char == reference_char]
@@ -14,9 +14,7 @@ def add_all_antinodes(grid, antinodes, line_index, char_index, line_diff, row_di
 
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    grid = []
-    for line in data_file:
-        grid.append(list(line.strip()))
+    grid = initialise_grid(data_file)
     antinodes = set()
     for line_index, line in enumerate(grid):
         for char_index, char in enumerate(line):
@@ -32,9 +30,7 @@ def run_part_one(mode, expected = None):
 
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
-    grid = []
-    for line in data_file:
-        grid.append(list(line.strip()))
+    grid = initialise_grid(data_file)
     antinodes = set()
     for line_index, line in enumerate(grid):
         for char_index, char in enumerate(line):
