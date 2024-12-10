@@ -6,51 +6,29 @@ def initialise_map(data_file):
     return [list(line.strip()) for line in data_file]
 
 def find_trailheads(map):
-    trailheads = []
-    for y in range(len(map)):
-        for x in range(len(map[y])):
-            if map[x][y] == "0":
-                trailheads.append((x, y))
-    return trailheads
+    return [(x, y) for y in range(len(map)) for x in range(len(map[y])) if map[x][y] == "0"]
 
 def find_summits(map):
-    summits = []
-    for y in range(len(map)):
-        for x in range(len(map[y])):
-            if map[x][y] == "9":
-                summits.append((x, y))
-    return summits
+    return [(x, y) for y in range(len(map)) for x in range(len(map[y])) if map[x][y] == "9"]
 
 def is_touching_number(map, x, y, number, direction):
-    if direction == "up":
-        if x > 0 and map[x-1][y] == str(number):
-            return x-1, y
-    if direction == "down":
-        if x < len(map) - 1 and map[x+1][y] == str(number):
-            return x+1, y
-    if direction == "left":
-        if y > 0 and map[x][y-1] == str(number):
-            return x, y-1
-    if direction == "right":
-        if y < len(map[0]) - 1 and map[x][y+1] == str(number):
-            return x, y+1
+    dx, dy = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (0, 1)}[direction]
+    new_x, new_y = x + dx, y + dy
+    if 0 <= new_x < len(map) and 0 <= new_y < len(map[0]) and map[new_x][new_y] == str(number):
+        return new_x, new_y
     return None, None
 
 def calculate_trailhead_score(map, trailhead):
     cells_visited = set()
     cells_visited.add(trailhead)
     for number_to_check in range(1, 10):
-        for y in range(len(map)):
-            for x in range(len(map[y])):
-                if map[x][y] == ".": # For the examples
-                    continue
-                if map[x][y] == str(number_to_check-1):
-                    if (x, y) in cells_visited:
-                        cells_visited.add((x, y))
-                        for direction in ["up", "down", "left", "right"]:
-                            touching_x, touching_y = is_touching_number(map, x, y, number_to_check, direction)
-                            if touching_x is not None:
-                                cells_visited.add((touching_x, touching_y))
+        for x in range(len(map)):
+            for y in range(len(map[x])):
+                if map[x][y] == str(number_to_check - 1) and (x, y) in cells_visited:
+                    for direction in ["up", "down", "left", "right"]:
+                        touching_x, touching_y = is_touching_number(map, x, y, number_to_check, direction)
+                        if touching_x is not None:
+                            cells_visited.add((touching_x, touching_y))
     return sum(1 for summit in find_summits(map) if summit in cells_visited)
 
 # This method wouldn't exist without some AI help
