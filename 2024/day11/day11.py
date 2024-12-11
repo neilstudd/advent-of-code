@@ -5,7 +5,7 @@ from collections import Counter
 
 def count_stones_after_blinking(stones, number_of_blinks):
     stone_counts = Counter(stones)
-    for _ in range(1, number_of_blinks + 1):
+    for _ in range(number_of_blinks):
         new_stone_counts = Counter()
         for stone, count in stone_counts.items():
             if stone == 0:
