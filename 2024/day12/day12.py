@@ -46,7 +46,6 @@ def run_part_one(mode, expected = None):
     print_and_verify_answer(mode, "one", total_fencing, expected)
 
 def run_part_two(mode, expected = None):
-
     data_file = open_file( mode + ".txt")
     allotment = initialise_grid(data_file)
     cells_visited = set()
@@ -64,19 +63,19 @@ def run_part_two(mode, expected = None):
             right_cells_checked = set()
             for cell in this_set:
                 x, y = cell
-                cell_to_left_in_this_set = (x, y - 1) in this_set
-                cell_to_right_in_this_set = (x, y + 1) in this_set
-                cell_above_in_this_set = (x - 1, y) in this_set
-                cell_below_in_this_set = (x + 1, y) in this_set
-                above_cell_in_left_set = (x - 1, y) in left_cells_checked
-                below_cell_in_left_set = (x + 1, y) in left_cells_checked
-                above_cell_in_right_set = (x - 1, y) in right_cells_checked
-                below_cell_in_right_set = (x + 1, y) in right_cells_checked
-                cell_to_left_in_top_set = (x, y - 1) in top_cells_checked
-                cell_to_right_in_top_set = (x, y + 1) in top_cells_checked
-                cell_to_left_in_bottom_set = (x, y - 1) in bottom_cells_checked
-                cell_to_right_in_bottom_set = (x, y + 1) in bottom_cells_checked               
-                if not cell_to_left_in_this_set and not above_cell_in_left_set and not below_cell_in_left_set:
+                cell_to_left_part_of_set = (x, y - 1) in this_set
+                cell_to_right_part_of_set = (x, y + 1) in this_set
+                above_cell_part_of_set = (x - 1, y) in this_set
+                below_cell_part_of_set = (x + 1, y) in this_set
+                above_cell_already_checked_on_left = (x - 1, y) in left_cells_checked
+                below_cell_already_checked_on_left = (x + 1, y) in left_cells_checked
+                above_cell_already_checked_on_right = (x - 1, y) in right_cells_checked
+                below_cell_already_checked_on_right = (x + 1, y) in right_cells_checked
+                cell_to_left_already_checked_above = (x, y - 1) in top_cells_checked
+                cell_to_right_already_checked_above = (x, y + 1) in top_cells_checked
+                cell_to_left_already_checked_below = (x, y - 1) in bottom_cells_checked
+                cell_to_right_already_checked_below = (x, y + 1) in bottom_cells_checked               
+                if not cell_to_left_part_of_set and not above_cell_already_checked_on_left and not below_cell_already_checked_on_left:
                     sides += 1
                     x, y = cell
                     while (x - 1, y) in this_set and x > 0 and (x-1, y-1) not in this_set:
@@ -87,7 +86,7 @@ def run_part_two(mode, expected = None):
                         left_cells_checked.add((x + 1, y))
                         x += 1
                     left_cells_checked.add(cell)                  
-                if not cell_to_right_in_this_set and not above_cell_in_right_set and not below_cell_in_right_set:
+                if not cell_to_right_part_of_set and not above_cell_already_checked_on_right and not below_cell_already_checked_on_right:
                     sides += 1
                     x, y = cell
                     while (x - 1, y) in this_set and x > 0 and (x-1, y+1) not in this_set:
@@ -98,7 +97,7 @@ def run_part_two(mode, expected = None):
                         right_cells_checked.add((x + 1, y))
                         x += 1
                     right_cells_checked.add(cell)                  
-                if not cell_above_in_this_set and not cell_to_left_in_top_set and not cell_to_right_in_top_set:
+                if not above_cell_part_of_set and not cell_to_left_already_checked_above and not cell_to_right_already_checked_above:
                     sides += 1
                     x, y = cell
                     while (x, y - 1) in this_set and y > 0 and (x-1, y-1) not in this_set:
@@ -109,7 +108,7 @@ def run_part_two(mode, expected = None):
                         top_cells_checked.add((x, y + 1))
                         y += 1
                     top_cells_checked.add(cell)
-                if not cell_below_in_this_set and not cell_to_left_in_bottom_set and not cell_to_right_in_bottom_set:
+                if not below_cell_part_of_set and not cell_to_left_already_checked_below and not cell_to_right_already_checked_below:
                     sides += 1
                     x, y = cell
                     while (x, y - 1) in this_set and y > 0 and (x+1, y-1) not in this_set:
