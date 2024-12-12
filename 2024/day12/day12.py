@@ -126,7 +126,7 @@ def run_part_two(mode, expected = None):
 
 # ADD EXPECTED OUTPUTS TO TESTS HERE 👇
 run_part_one("test", 1930)
-run_part_one("prod")
+run_part_one("prod", 1465112)
 run_part_two("test", 1206)
 run_part_two("test2", 368)
 run_part_two("test3", 236)
