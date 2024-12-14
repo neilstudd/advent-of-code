@@ -59,25 +59,29 @@ def calculate_quadrants(lobby):
     q4_sum = sum([sum(row) for row in q4])
     return q1_sum * q2_sum * q3_sum * q4_sum
 
+def move_robots(robots, width, height):
+    for robot in robots:
+        robot["pos_x"] += robot["vel_x"]
+        robot["pos_y"] += robot["vel_y"]
+        if robot["pos_x"] < 0:
+            robot["pos_x"] += width
+        elif robot["pos_x"] >= width:
+            robot["pos_x"] -= width
+        if robot["pos_y"] < 0:
+            robot["pos_y"] += height
+        elif robot["pos_y"] >= height:
+            robot["pos_y"] -= height
+    lobby = build_lobby(width, height)
+    update_positions(robots, lobby)
+    return lobby
+
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
     robots = build_robots(data_file)
     width, height = (11, 7) if mode == "test" else (101, 103)
     lobby = build_lobby(width, height)
     for _ in range(1,101):
-        for robot in robots:
-            robot["pos_x"] += robot["vel_x"]
-            robot["pos_y"] += robot["vel_y"]
-            if robot["pos_x"] < 0:
-                robot["pos_x"] += width
-            elif robot["pos_x"] >= width:
-                robot["pos_x"] -= width
-            if robot["pos_y"] < 0:
-                robot["pos_y"] += height
-            elif robot["pos_y"] >= height:
-                robot["pos_y"] -= height
-        lobby = build_lobby(width, height)
-        update_positions(robots, lobby)
+        lobby = move_robots(robots, width, height)
     answer = calculate_quadrants(lobby)
     print_and_verify_answer(mode, "one", answer, expected)
 
@@ -87,18 +91,7 @@ def run_part_two(mode, expected = None):
     width, height = (11, 7) if mode == "test" else (101, 103)
     lobby = build_lobby(width, height)
     for seconds in range(1,10000):
-        for robot in robots:
-            robot["pos_x"] += robot["vel_x"]
-            robot["pos_y"] += robot["vel_y"]
-            if robot["pos_x"] < 0:
-                robot["pos_x"] += width
-            elif robot["pos_x"] >= width:
-                robot["pos_x"] -= width
-            if robot["pos_y"] < 0:
-                robot["pos_y"] += height
-            elif robot["pos_y"] >= height:
-                robot["pos_y"] -= height
-        lobby = build_lobby(width, height)
+        lobby = move_robots(robots, width, height)
         new_positions = update_positions(robots, lobby)
         output = "\n".join("".join("#" if char > 0 else " " for char in line) for line in new_positions)
         # (NB: Actually solved this by printing all the outputs to file, then checking the file)
