@@ -80,7 +80,7 @@ def run_part_one(mode, expected = None):
     robots = build_robots(data_file)
     width, height = (11, 7) if mode == "test" else (101, 103)
     lobby = build_lobby(width, height)
-    for _ in range(1,101):
+    for _ in range(100):
         lobby = move_robots(robots, width, height)
     answer = calculate_quadrants(lobby)
     print_and_verify_answer(mode, "one", answer, expected)
