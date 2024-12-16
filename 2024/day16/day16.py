@@ -28,13 +28,13 @@ def calculate_routes(grid):
                 if (new_x, new_y) not in best_scores or new_score <= best_scores[(new_x, new_y)]:
                     best_scores[(new_x, new_y)] = new_score
                     queue.append((new_x, new_y, path + [(new_x, new_y)], new_dir, new_score))    
-    return routes
+    return lowest_score
 
 # Part 2, more BFS assistance from AI 🤖 (these can probably be refactored into a single method)
 def calculate_all_routes_with_lowest_score(grid, lowest_score):
     start_x, start_y = calculate_starting_position(grid)
     end_x, end_y = calculate_ending_position(grid)
-    queue = deque([(start_x, start_y, [(start_x, start_y)], 0, 0, 0)])  # Use integers for directions
+    queue = deque([(start_x, start_y, [(start_x, start_y)], 0, 0, 0)])
     distinct_cells = set()
     visited = {}
     directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
@@ -89,24 +89,13 @@ def is_last_move_in_route(move, route):
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
     maze = initialise_grid(data_file)
-    routes = calculate_routes(maze)
-    lowest_route_score = 9999999
-    for route in routes:
-        route_score = route[-1]
-        if route_score < lowest_route_score:
-            lowest_route_score = route_score
+    lowest_route_score = calculate_routes(maze)
     print_and_verify_answer(mode, "one", lowest_route_score, expected)
 
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
     maze = initialise_grid(data_file)
-    routes = calculate_routes(maze)
-    lowest_route_score = 9999999
-    for route in routes:
-        route_score = route[-1]
-        if route_score < lowest_route_score:
-            lowest_route_score = route_score
-
+    lowest_route_score = calculate_routes(maze)
     cells_visited_on_best_routes = calculate_all_routes_with_lowest_score(maze, lowest_route_score)
     print_and_verify_answer(mode, "two", cells_visited_on_best_routes, expected)
 
