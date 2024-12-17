@@ -95,7 +95,6 @@ def run_part_two(mode, expected = None):
     while matching_digits_from_right < len(desired_output_value): 
         computer = initialise_computer_from_file(data_file)
         computer.RegisterA = initial_regA_value
-        computer.expected_output = desired_output_value
         while computer.has_more_instructions():
             next_instructions = computer.get_next_instructions()
             computer.execute_instruction(next_instructions)
