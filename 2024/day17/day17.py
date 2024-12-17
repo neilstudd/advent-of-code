@@ -10,20 +10,6 @@ class Computer:
         self.instructions = instructions
         self.instruction_pointer = 0
         self.output = []
-        self.expected_output = []
-
-    # If we've given an expected_output, this method allows us to check if we've gone off track
-    # eg: If we encounter a number in output which isn't in expected_output, or if we've got too many numbers
-    def has_invalid_expected_output(self):
-        if self.expected_output == []:
-            return False
-        elif len(self.expected_output) < len(self.output):
-            return True
-        else:
-            for i in range(len(self.output)):
-                if self.expected_output[i] != self.output[i]:
-                    return True
-        return False
 
     def get_next_instructions(self):
         if self.has_more_instructions():
@@ -122,33 +108,30 @@ def run_part_one(mode, expected = None):
     answer = ",".join([str(x) for x in computer.output])
     print_and_verify_answer(mode, "one", answer, expected)
 
+# Maths logic assist from Reddit, but the code is all my own!
 def run_part_two(mode, expected = None):
     data_file = open_file( mode + ".txt")
     computer = initialise_computer_from_file(data_file)
     desired_output_value = computer.instructions
-
-    # If I was going to brute-force it, this is how it would go.
-    # But based on AI projection, it would take literally 25 YEARS to complete.
-    # Reddit tells me this is a problem which can be solved quickly with maths...
+    matching_digits_from_right = 0
     initial_regA_value = 0
-    while True: 
+    while matching_digits_from_right < len(desired_output_value): 
         computer = initialise_computer_from_file(data_file)
         computer.RegisterA = initial_regA_value
         computer.expected_output = desired_output_value
-        while computer.has_more_instructions() and not computer.has_invalid_expected_output():
+        while computer.has_more_instructions():
             next_instructions = computer.get_next_instructions()
             computer.execute_instruction(next_instructions)
-        if computer.output == desired_output_value:
-            break
-
-        # if regA is divisible by 1000000, print a status update
-        if initial_regA_value % 1000000 == 0:
-            print("RegA: " + str(initial_regA_value) + "\nDesired output: " + str(desired_output_value) + "\nActual output: " + str(computer.output) + "\n")
-
-        initial_regA_value += 1
-
-    answer = initial_regA_value
-    print_and_verify_answer(mode, "two", answer, expected)
+        while len(computer.output) < len(desired_output_value):
+            computer.output.insert(0, 0) # Front-pad to avoid length violation
+        if matching_digits_from_right <= len(computer.output):
+            if computer.output[-1 - matching_digits_from_right] == desired_output_value[-1 - matching_digits_from_right]:
+                matching_digits_from_right += 1
+                initial_regA_value *= 8
+            else:
+                initial_regA_value += 1
+    initial_regA_value = initial_regA_value // 8 # lowest multiple
+    print_and_verify_answer(mode, "two", initial_regA_value, expected)
 
 # Shortcut to taking a proper TDD approach, which I'll do in 2025!
 def run_tests():
@@ -211,25 +194,10 @@ def run_tests():
         computer.execute_instruction(computer.get_next_instructions())
     assert computer.output == [0, 3, 5, 4, 3, 0]
 
-    # PART TWO HELPER: invalid_expected_output remains False if we keep within bounds
-    computer = Computer(117440, 0, 0, [0, 3, 5, 4, 3, 0])
-    computer.expected_output = [0, 3, 5, 4, 3, 0]
-    while computer.has_more_instructions() and not computer.has_invalid_expected_output():
-        computer.execute_instruction(computer.get_next_instructions())
-    assert computer.has_invalid_expected_output() == False
-
-    # PART TWO HELPER: invalid_expected_output is triggered if the output is different
-    computer = Computer(2, 0, 0, [0, 3, 5, 4, 3, 0])
-    computer.expected_output = [9, 3, 5, 4, 3, 0]
-    while computer.has_more_instructions() and not computer.has_invalid_expected_output():
-        computer.execute_instruction(computer.get_next_instructions())
-    print(computer.output)
-    assert computer.has_invalid_expected_output() == True
-
 # ADD EXPECTED OUTPUTS TO TESTS HERE 👇
 run_tests()
 run_part_one("test", "4,6,3,5,6,3,5,2,1,0")
 run_part_one("prod", "1,2,3,1,3,2,5,3,1")
 run_part_two("test2", 117440)
-#run_part_two("prod")
+run_part_two("prod", 105706277661082) 
 # Now run it and watch the magic happen 🪄
