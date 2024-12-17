@@ -19,29 +19,10 @@ class Computer:
 
     def has_more_instructions(self):
         return self.instruction_pointer < len(self.instructions)
-    
-    def compute_combo_operand(self, combo_operand):
-        match combo_operand:
-            case 0:
-                return self.RegisterA
-            case 1:
-                return self.RegisterB
-            case 2:
-                return self.RegisterC
-            case 3:
-                return self.RegisterA ^ self.RegisterB
-            case 4:
-                return self.RegisterA ^ self.RegisterC
-            case 5:
-                return self.RegisterB ^ self.RegisterC
-            case 6:
-                return self.RegisterA ^ self.RegisterB ^ self.RegisterC
-            case _:
-                print("ERROR: Invalid combo operand")
 
     def execute_instruction(self, instruction):
         match instruction[0]:
-            case 0: # adv # DONE
+            case 0: # adv
                 numerator = self.RegisterA
                 denominator = self.compute_combo_operand(instruction[1])
                 self.RegisterA = numerator // (2 ** denominator)
@@ -66,8 +47,6 @@ class Computer:
                 numerator = self.RegisterA
                 denominator = self.compute_combo_operand(instruction[1])
                 self.RegisterC = numerator // (2 ** denominator)
-            case _:
-                print("ERROR: Invalid opcode")
         self.instruction_pointer += 2
 
     def compute_combo_operand(self, combo_operand):
@@ -86,7 +65,6 @@ def initialise_computer_from_file(data_file):
     regB = 0
     regC = 0
     program_string = []
-
     for line in data_file:
         if line.startswith("Register A: "):
             regA = int(line.strip().split(": ")[1])
@@ -96,7 +74,6 @@ def initialise_computer_from_file(data_file):
             regC = int(line.strip().split(": ")[1])
         elif line.startswith("Program: "):
             program_string.extend([int(x) for x in line.strip().split(": ")[1].split(",")])
-
     return Computer(regA, regB, regC, program_string)
 
 def run_part_one(mode, expected = None):
