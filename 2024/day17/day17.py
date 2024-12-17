@@ -154,12 +154,7 @@ def run_tests():
     computer.execute_instruction(computer.get_next_instructions())
     assert computer.RegisterB == 26
 
-    # RULE 5: If register B contains 29, the program 1,7 would set register B to 26.
-    computer = Computer(0, 29, 0, [1, 7])
-    computer.execute_instruction(computer.get_next_instructions())
-    assert computer.RegisterB == 26
-
-    # RULE 6: If register B contains 2024 and register C contains 43690, the program 4,0 would set register B to 44354
+    # RULE 5: If register B contains 2024 and register C contains 43690, the program 4,0 would set register B to 44354
     computer = Computer(0, 2024, 43690, [4, 0])
     computer.execute_instruction(computer.get_next_instructions())
     assert computer.RegisterB == 44354
