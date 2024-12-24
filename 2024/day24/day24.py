@@ -11,9 +11,6 @@ def process_operation(gates, gate1, operation, gate2):
         return gate1_val | gate2_val
     elif operation == "XOR":
         return gate1_val ^ gate2_val
-    else:
-        print("Unexpected operation: " + operation)
-        return None
 
 def run_part_one(mode, expected = None):
     data_file = open_file( mode + ".txt")
@@ -32,12 +29,9 @@ def run_part_one(mode, expected = None):
             gates[key.strip()] = int(value.strip())
     while len(new_gates) > 0:
         for gate, gate_val in new_gates.items():
-            gate1 = gate_val[0]
-            operation = gate_val[1]
-            gate2 = gate_val[2]
+            gate1, operation, gate2 = gate_val
             if gate1 in gates and gate2 in gates:
-                new_gate_value = process_operation(gates, gate1, operation, gate2)
-                gates[gate] = new_gate_value
+                gates[gate] = process_operation(gates, gate1, operation, gate2)
                 del new_gates[gate]
                 break
     answer = "".join([str(gates[key]) for key in sorted(gates.keys(), reverse=True) if key.startswith("z")])
