@@ -20,6 +20,10 @@ Started in 2022, but I'll backfill previous years when I need a festive boost.
 **2022:**  🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟧🟨🟨⬛⬜⬜⬛⬜⬛🟨⬜🟨⬜⬛ _(36)_  
 **2021:**  🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ _(16)_
 
+### Seems like you used a lot of AI in 2024.
+
+I did, and deliberately so! You can read more about why (and how) here: [2024 AI Experiment](AI.md).
+
 ### Where's the `prod` data?
 
 As per [AoC's request](https://www.reddit.com/r/adventofcode/comments/18ehed6/re_not_sharing_inputs_psa_deleting_and_committing/), I've nuked the `prod.txt` files from the repository; if you want to follow along with the production version, you'll need to download your own puzzle input from your own AoC account (and, of course, your "expected" Production answers will be different to mine!)
