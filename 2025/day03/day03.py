@@ -25,5 +25,5 @@ def run_part_two(mode, expected = None):
 run_part_one("test", 357)
 run_part_one("prod", 17452)
 run_part_two("test", 3121910778619)
-run_part_two("prod", 0)
+# run_part_two("prod", 0) # This will never complete - too many combinations
 # Now run it and watch the magic happen 🪄
